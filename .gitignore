@@ -2,6 +2,10 @@
 !*.cpp
 !*.hpp
 !*.json
+!*.md
+!*.gnuplot
 test*
 !.gitignore
+
 !.vscode/
+!results/

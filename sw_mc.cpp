@@ -1,5 +1,7 @@
 #include "sw.hpp"
+#include <iomanip>
 
+using std::setw;
 
 int main(int argc, char* argv[])
 {
@@ -31,6 +33,8 @@ int main(int argc, char* argv[])
   // print_lattice(lattice);
 
   std::ofstream outfile_data("results.dat");
+  outfile_data.precision(5);
+
   for(double temperature = 6.0; temperature >= 0.1; temperature -= 0.04)
   {
     for(int sweep=1; sweep < no_therm; sweep++)
@@ -38,23 +42,23 @@ int main(int argc, char* argv[])
       swendsen_flip(lattice, temperature);
     } 
     
-    double total_M = 0.0;
-    double total_E = 0.0;
-    double total_E2 = 0.0;
+    double total_M  = 0.0;
     double total_M2 = 0.0;
+    double total_E  = 0.0;
+    double total_E2 = 0.0;
 
     for(int sweep= no_therm; sweep < no_sweeps; sweep++)
     {
       swendsen_flip(lattice, temperature);
-      total_M += magnetization(lattice);
-      total_E += energy(lattice);
-      total_E2 += pow(energy(lattice),2);
+      total_M  += magnetization(lattice);
       total_M2 += pow(magnetization(lattice),2);
+      total_E  += energy(lattice);
+      total_E2 += pow(energy(lattice),2);
     }
 
-    double avg_M = total_M/no_msmt;
-    double avg_E = total_E/no_msmt;
+    double avg_M  = total_M/no_msmt;
     double avg_M2 = total_M2/no_msmt;
+    double avg_E  = total_E/no_msmt;
     double avg_E2 = total_E2/no_msmt;
 
     double err_E = sqrt(avg_E2 - pow(avg_E,2))/sqrt(no_msmt);
@@ -63,7 +67,10 @@ int main(int argc, char* argv[])
     double cv = (avg_E2 - pow(avg_E,2)) /pow(temperature,2); 
     double xi = (avg_M2 - pow(avg_M,2)) /temperature; 
 
-    outfile_data << temperature << " " << avg_M <<  " " << err_M << " " << avg_E << " " << err_E << " " << cv << " " << xi << endl;
+    outfile_data << setw(10) << temperature << " " << setw(10) <<  avg_M <<  " " << setw(10) <<  err_M << " " << setw(10)
+                 <<  avg_E << " " << setw(10) <<  err_E << " " << setw(10) <<  cv << " " << setw(10) <<  xi << endl;
+
+    cout << "Temperature = " << temperature << " done. \r"; cout.flush();
   }
 
   // print_lattice(lattice);
