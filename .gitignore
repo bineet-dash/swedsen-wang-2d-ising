@@ -4,6 +4,7 @@
 !*.json
 !*.md
 !*.gnuplot
+!*.sh
 test*
 !.gitignore
 
